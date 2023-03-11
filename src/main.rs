@@ -1,10 +1,62 @@
 use std::io;
 
+enum Field {
+    Empty,
+    PlayerX,
+    PlayerO,
+}
+
+impl Field {
+    fn get_char_representation(&self) -> &str {
+        match self {
+            Field::Empty => " ",
+            Field::PlayerX => "X",
+            Field::PlayerO => "O",
+        }
+    }
+}
+
 fn main() {
-    println!("Hey there! What's your name?");
-    let user_name = read_line().unwrap();
-    println!("Hey {}. Welcome to my rust program :)", user_name);
-    println!("Bye!");
+    let board = vec![
+        Field::Empty,
+        Field::PlayerX,
+        Field::PlayerO,
+        Field::Empty,
+        Field::Empty,
+        Field::Empty,
+        Field::Empty,
+        Field::Empty,
+        Field::Empty,
+    ];
+
+    print_board(&board);
+
+    println!("Pick your position:");
+    read_line().unwrap();
+}
+
+fn print_board(board: &Vec<Field>) {
+    println!("  A   B   C ");
+    println!(
+        "1 {} | {} | {}",
+        board[0].get_char_representation(),
+        board[1].get_char_representation(),
+        board[2].get_char_representation()
+    );
+    println!(" ---+---+---");
+    println!(
+        "2 {} | {} | {}",
+        board[3].get_char_representation(),
+        board[4].get_char_representation(),
+        board[5].get_char_representation()
+    );
+    println!(" ---+---+---");
+    println!(
+        "3 {} | {} | {}",
+        board[6].get_char_representation(),
+        board[7].get_char_representation(),
+        board[8].get_char_representation()
+    );
 }
 
 fn read_line() -> io::Result<String> {
