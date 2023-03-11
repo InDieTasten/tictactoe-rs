@@ -38,6 +38,14 @@ fn main() {
         );
         let position_input = read_line().unwrap();
 
+        // todo: parse position from input
+
+        // todo: validate placement to position
+
+        // todo: check win conditions for current player
+
+        // todo: end game loop on win
+
         // toggle current player between X and O
         current_player = match current_player {
             Position::Empty => Position::Empty,
