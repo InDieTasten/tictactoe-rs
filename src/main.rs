@@ -29,10 +29,22 @@ fn main() {
         Field::Empty,
     ];
 
-    print_board(&board);
+    let mut current_player = Field::PlayerX;
+    loop {
+        print_board(&board);
+        println!(
+            "Player {}: What's your next position?",
+            current_player.get_char_representation()
+        );
+        let position_input = read_line().unwrap();
 
-    println!("Pick your position:");
-    read_line().unwrap();
+        // toggle current player between X and O
+        current_player = match current_player {
+            Field::Empty => Field::PlayerX,
+            Field::PlayerX => Field::PlayerO,
+            Field::PlayerO => Field::PlayerX,
+        }
+    }
 }
 
 fn print_board(board: &Vec<Field>) {
