@@ -1,35 +1,35 @@
 use std::io;
 
-enum Field {
+enum Position {
     Empty,
-    PlayerX,
-    PlayerO,
+    X,
+    O,
 }
 
-impl Field {
+impl Position {
     fn get_char_representation(&self) -> &str {
         match self {
-            Field::Empty => " ",
-            Field::PlayerX => "X",
-            Field::PlayerO => "O",
+            Position::Empty => " ",
+            Position::X => "X",
+            Position::O => "O",
         }
     }
 }
 
 fn main() {
     let board = vec![
-        Field::Empty,
-        Field::PlayerX,
-        Field::PlayerO,
-        Field::Empty,
-        Field::Empty,
-        Field::Empty,
-        Field::Empty,
-        Field::Empty,
-        Field::Empty,
+        Position::Empty,
+        Position::X,
+        Position::O,
+        Position::Empty,
+        Position::Empty,
+        Position::Empty,
+        Position::Empty,
+        Position::Empty,
+        Position::Empty,
     ];
 
-    let mut current_player = Field::PlayerX;
+    let mut current_player = Position::X;
     loop {
         print_board(&board);
         println!(
@@ -40,14 +40,14 @@ fn main() {
 
         // toggle current player between X and O
         current_player = match current_player {
-            Field::Empty => Field::PlayerX,
-            Field::PlayerX => Field::PlayerO,
-            Field::PlayerO => Field::PlayerX,
+            Position::Empty => Position::Empty,
+            Position::X => Position::O,
+            Position::O => Position::X,
         }
     }
 }
 
-fn print_board(board: &Vec<Field>) {
+fn print_board(board: &Vec<Position>) {
     println!("  A   B   C ");
     println!(
         "1 {} | {} | {}",
