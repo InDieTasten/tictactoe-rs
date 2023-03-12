@@ -61,7 +61,7 @@ fn main() {
             }
         };
 
-        board[input_index] = current_player.clone();
+        board[input_index] = current_player;
 
         // todo: check win/tie conditions for current player
 
@@ -94,44 +94,40 @@ fn parse_position_index_from_literal(literal: String) -> Option<usize> {
     let mut row: Option<usize> = None;
 
     let upper_literal = literal.to_uppercase();
-    column = if column == None && upper_literal.contains('A') {
+    column = if column.is_none() && upper_literal.contains('A') {
         Some(0)
     } else {
         column
     };
-    column = if column == None && upper_literal.contains('B') {
+    column = if column.is_none() && upper_literal.contains('B') {
         Some(1)
     } else {
         column
     };
-    column = if column == None && upper_literal.contains('C') {
+    column = if column.is_none() && upper_literal.contains('C') {
         Some(2)
     } else {
         column
     };
 
-    row = if row == None && upper_literal.contains('1') {
+    row = if row.is_none() && upper_literal.contains('1') {
         Some(0)
     } else {
         row
     };
-    row = if row == None && upper_literal.contains('2') {
+    row = if row.is_none() && upper_literal.contains('2') {
         Some(1)
     } else {
         row
     };
-    row = if row == None && upper_literal.contains('3') {
+    row = if row.is_none() && upper_literal.contains('3') {
         Some(2)
     } else {
         row
     };
 
     if let Some(c) = column {
-        if let Some(r) = row {
-            Some(r * 3 + c)
-        } else {
-            None
-        }
+        row.map(|r| r * 3 + c)
     } else {
         None
     }
