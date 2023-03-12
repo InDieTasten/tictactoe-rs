@@ -1,11 +1,17 @@
 use colored::Colorize;
 use std::io;
 
-#[derive(Clone, Copy)]
+#[derive(Clone, Copy, PartialEq)]
 enum Position {
     Empty,
     X,
     O,
+}
+
+enum GameResult {
+    WinX,
+    WinO,
+    Tie,
 }
 
 impl Position {
@@ -32,7 +38,7 @@ fn main() {
     ];
 
     let mut current_player = Position::X;
-    loop {
+    let result = loop {
         let input_index: usize = loop {
             print_board(&board);
             println!(
@@ -59,7 +65,9 @@ fn main() {
 
         // todo: check win/tie conditions for current player
 
-        // todo: end game loop on win/tie
+        if !board.contains(&Position::Empty) {
+            break GameResult::Tie;
+        }
 
         // toggle current player between X and O
         current_player = match current_player {
@@ -67,7 +75,18 @@ fn main() {
             Position::X => Position::O,
             Position::O => Position::X,
         }
-    }
+    };
+
+    match result {
+        GameResult::Tie => {
+            println!("The game ended in a tie. Well played from both sides!");
+        }
+        GameResult::WinX => todo!(),
+        GameResult::WinO => todo!(),
+    };
+
+    println!("Final board position:");
+    print_board(&board);
 }
 
 fn parse_position_index_from_literal(literal: String) -> Option<usize> {
