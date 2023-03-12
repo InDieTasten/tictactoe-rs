@@ -1,4 +1,5 @@
 use colored::Colorize;
+use std::fmt;
 use std::io;
 
 #[derive(Clone, Copy, PartialEq)]
@@ -14,13 +15,17 @@ enum GameResult {
     Tie,
 }
 
-impl Position {
-    fn to_string(&self) -> String {
-        match self {
-            Position::Empty => " ".white().to_string(),
-            Position::X => "X".red().to_string(),
-            Position::O => "O".blue().to_string(),
-        }
+impl fmt::Display for Position {
+    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
+        write!(
+            f,
+            "{}",
+            match self {
+                Position::Empty => " ".white().to_string(),
+                Position::X => "X".red().to_string(),
+                Position::O => "O".blue().to_string(),
+            }
+        )
     }
 }
 
@@ -41,10 +46,7 @@ fn main() {
     let result = loop {
         let input_index: usize = loop {
             print_board(&board);
-            println!(
-                "Player {}: What's your next position?",
-                current_player.to_string()
-            );
+            println!("Player {}: What's your next position?", current_player);
             let position_input = read_line().unwrap();
             let input_index = parse_position_index_from_literal(position_input);
             if let Some(index) = input_index {
@@ -133,28 +135,13 @@ fn parse_position_index_from_literal(literal: String) -> Option<usize> {
     }
 }
 
-fn print_board(board: &Vec<Position>) {
+fn print_board(board: &[Position]) {
     println!("  A   B   C ");
-    println!(
-        "1 {} | {} | {}",
-        board[0].to_string(),
-        board[1].to_string(),
-        board[2].to_string()
-    );
+    println!("1 {} | {} | {}", board[0], board[1], board[2]);
     println!(" ---+---+---");
-    println!(
-        "2 {} | {} | {}",
-        board[3].to_string(),
-        board[4].to_string(),
-        board[5].to_string()
-    );
+    println!("2 {} | {} | {}", board[3], board[4], board[5]);
     println!(" ---+---+---");
-    println!(
-        "3 {} | {} | {}",
-        board[6].to_string(),
-        board[7].to_string(),
-        board[8].to_string()
-    );
+    println!("3 {} | {} | {}", board[6], board[7], board[8]);
 }
 
 fn read_line() -> io::Result<String> {
