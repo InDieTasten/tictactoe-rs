@@ -1,3 +1,4 @@
+use colored::Colorize;
 use std::io;
 
 #[derive(Clone, Copy)]
@@ -8,11 +9,11 @@ enum Position {
 }
 
 impl Position {
-    fn get_char_representation(&self) -> &str {
+    fn to_string(&self) -> String {
         match self {
-            Position::Empty => " ",
-            Position::X => "X",
-            Position::O => "O",
+            Position::Empty => " ".white().to_string(),
+            Position::X => "X".red().to_string(),
+            Position::O => "O".blue().to_string(),
         }
     }
 }
@@ -36,7 +37,7 @@ fn main() {
             print_board(&board);
             println!(
                 "Player {}: What's your next position?",
-                current_player.get_char_representation()
+                current_player.to_string()
             );
             let position_input = read_line().unwrap();
             let input_index = parse_position_index_from_literal(position_input);
@@ -121,23 +122,23 @@ fn print_board(board: &Vec<Position>) {
     println!("  A   B   C ");
     println!(
         "1 {} | {} | {}",
-        board[0].get_char_representation(),
-        board[1].get_char_representation(),
-        board[2].get_char_representation()
+        board[0].to_string(),
+        board[1].to_string(),
+        board[2].to_string()
     );
     println!(" ---+---+---");
     println!(
         "2 {} | {} | {}",
-        board[3].get_char_representation(),
-        board[4].get_char_representation(),
-        board[5].get_char_representation()
+        board[3].to_string(),
+        board[4].to_string(),
+        board[5].to_string()
     );
     println!(" ---+---+---");
     println!(
         "3 {} | {} | {}",
-        board[6].get_char_representation(),
-        board[7].get_char_representation(),
-        board[8].get_char_representation()
+        board[6].to_string(),
+        board[7].to_string(),
+        board[8].to_string()
     );
 }
 
