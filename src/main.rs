@@ -10,8 +10,7 @@ enum Position {
 }
 
 enum GameResult {
-    WinX,
-    WinO,
+    Win,
     Tie,
 }
 
@@ -65,8 +64,12 @@ fn main() {
 
         board[input_index] = current_player;
 
-        // todo: check win/tie conditions for current player
+        // check for winner
+        if detect_win(&board, current_player) {
+            break GameResult::Win;
+        }
 
+        // check for tie
         if !board.contains(&Position::Empty) {
             break GameResult::Tie;
         }
@@ -83,12 +86,47 @@ fn main() {
         GameResult::Tie => {
             println!("The game ended in a tie. Well played from both sides!");
         }
-        GameResult::WinX => todo!(),
-        GameResult::WinO => todo!(),
+        GameResult::Win => {
+            println!("Player {} won the game! Congratulations!", current_player);
+        }
     };
 
     println!("Final board position:");
     print_board(&board);
+}
+
+fn detect_win(board: &[Position], current_player: Position) -> bool {
+    // rows
+    if board[0] == current_player && board[1] == current_player && board[2] == current_player {
+        return true;
+    };
+    if board[3] == current_player && board[4] == current_player && board[5] == current_player {
+        return true;
+    };
+    if board[6] == current_player && board[7] == current_player && board[8] == current_player {
+        return true;
+    };
+
+    // columns
+    if board[0] == current_player && board[3] == current_player && board[6] == current_player {
+        return true;
+    };
+    if board[1] == current_player && board[4] == current_player && board[7] == current_player {
+        return true;
+    };
+    if board[2] == current_player && board[5] == current_player && board[8] == current_player {
+        return true;
+    };
+
+    // diagonals
+    if board[0] == current_player && board[4] == current_player && board[8] == current_player {
+        return true;
+    };
+    if board[2] == current_player && board[4] == current_player && board[6] == current_player {
+        return true;
+    };
+
+    false
 }
 
 fn parse_position_index_from_literal(literal: String) -> Option<usize> {
