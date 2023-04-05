@@ -7,8 +7,8 @@ Setup
 -----
 
 ```bash
-git clone https://github.com/InDieTasten/tictactoe.rs
-cd tictactoe.rs
+git clone https://github.com/InDieTasten/tictactoe-rs
+cd tictactoe-rs
 cargo build
 ```
 
