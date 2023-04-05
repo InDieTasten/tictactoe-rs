@@ -1,6 +1,15 @@
+use clap::Parser;
 use colored::Colorize;
+use rand::seq::SliceRandom;
 use std::fmt;
 use std::io;
+
+#[derive(Parser, Debug)]
+#[command(author, version, about)]
+struct Args {
+    #[arg(long, default_value_t = 0)]
+    ai: u8,
+}
 
 #[derive(Clone, Copy, PartialEq)]
 enum Position {
@@ -41,13 +50,37 @@ fn main() {
         Position::Empty,
     ];
 
+    let args = Args::parse();
+
     let mut current_player = Position::X;
     let result = loop {
         let input_index: usize = loop {
             print_board(&board);
-            println!("Player {}: What's your next position?", current_player);
-            let position_input = read_line().unwrap();
-            let input_index = parse_position_index_from_literal(position_input);
+
+            let is_ai_turn = args.ai != 0 && current_player == Position::O;
+
+            println!(
+                "{} {}: What's your next position?",
+                if is_ai_turn { "AI" } else { "Player" },
+                current_player
+            );
+
+            let input_index = if is_ai_turn {
+                // ai response
+                let free_board_indices = board
+                    .iter()
+                    .enumerate()
+                    .filter(|(_, &value)| value == Position::Empty)
+                    .map(|(index, _)| index)
+                    .collect::<Vec<_>>();
+
+                Some(*free_board_indices.choose(&mut rand::thread_rng()).unwrap())
+            } else {
+                // player response
+                let position_input = read_line().unwrap();
+                parse_position_index_from_literal(position_input)
+            };
+
             if let Some(index) = input_index {
                 match board[index] {
                     Position::Empty => break index,
