@@ -24,8 +24,8 @@ enum Piece {
 }
 
 enum GameResult {
-    Win,
-    Tie,
+    Win(Piece),
+    Tie
 }
 
 impl fmt::Display for Piece {
@@ -69,17 +69,17 @@ fn main() {
 
     let args = Args::parse();
 
-    let mut current_player = Piece::X;
+    let mut current_piece = Piece::X;
     let result = loop {
         let input_index: usize = loop {
             print_board(&board);
 
-            let is_ai_turn = args.ai != 0 && current_player == Piece::O;
+            let is_ai_turn = args.ai != 0 && current_piece == Piece::O;
 
             println!(
                 "{} {}: What's your next position?",
                 if is_ai_turn { "AI" } else { "Player" },
-                current_player
+                current_piece
             );
 
             let input_index = if is_ai_turn {
@@ -112,11 +112,11 @@ fn main() {
             }
         };
 
-        board[input_index] = Field::Occupied(current_player);
+        board[input_index] = Field::Occupied(current_piece);
 
         // check for winner
-        if detect_win(&board, current_player) {
-            break GameResult::Win;
+        if detect_win(&board, current_piece) {
+            break GameResult::Win(current_piece);
         }
 
         // check for tie
@@ -125,7 +125,7 @@ fn main() {
         }
 
         // toggle current player between X and O
-        current_player = match current_player {
+        current_piece = match current_piece {
             Piece::X => Piece::O,
             Piece::O => Piece::X,
         }
@@ -135,8 +135,8 @@ fn main() {
         GameResult::Tie => {
             println!("The game ended in a tie. Well played from both sides!");
         }
-        GameResult::Win => {
-            println!("Player {} won the game! Congratulations!", current_player);
+        GameResult::Win(piece) => {
+            println!("Player {} won the game! Congratulations!", piece);
         }
     };
 
