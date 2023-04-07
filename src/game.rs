@@ -1,8 +1,7 @@
-use std::{fmt, ops, io};
+use std::{fmt, io, ops};
 
 use colored::Colorize;
 use rand::seq::SliceRandom;
-
 
 pub struct Board(pub Vec<Field>);
 
@@ -31,14 +30,13 @@ impl Board {
             Field::Free,
             Field::Free,
             Field::Free,
-            Field::Free
+            Field::Free,
         ])
     }
 
     fn detect_win(&self, current_player: Piece) -> bool {
-
         let current_player = Field::Occupied(current_player);
-    
+
         // rows
         if self[0] == current_player && self[1] == current_player && self[2] == current_player {
             return true;
@@ -49,7 +47,7 @@ impl Board {
         if self[6] == current_player && self[7] == current_player && self[8] == current_player {
             return true;
         };
-    
+
         // columns
         if self[0] == current_player && self[3] == current_player && self[6] == current_player {
             return true;
@@ -60,7 +58,7 @@ impl Board {
         if self[2] == current_player && self[5] == current_player && self[8] == current_player {
             return true;
         };
-    
+
         // diagonals
         if self[0] == current_player && self[4] == current_player && self[8] == current_player {
             return true;
@@ -68,7 +66,7 @@ impl Board {
         if self[2] == current_player && self[4] == current_player && self[6] == current_player {
             return true;
         };
-    
+
         false
     }
 }
@@ -87,13 +85,13 @@ pub enum Piece {
 
 pub enum GameResult {
     Win(Piece),
-    Tie
+    Tie,
 }
 
 pub struct Game {
     pub board: Board,
     is_ai_game: bool,
-    current_piece: Piece
+    current_piece: Piece,
 }
 
 impl Game {
@@ -101,7 +99,7 @@ impl Game {
         Game {
             board: Board::new(),
             is_ai_game: ai_player,
-            current_piece: Piece::X
+            current_piece: Piece::X,
         }
     }
 
@@ -109,31 +107,32 @@ impl Game {
         loop {
             let input_index: usize = loop {
                 println!("{}", self.board);
-    
+
                 let is_ai_turn = self.is_ai_game && self.current_piece == Piece::O;
-    
+
                 println!(
                     "{} {}: What's your next position?",
                     if is_ai_turn { "AI" } else { "Player" },
                     self.current_piece
                 );
-    
+
                 let input_index = if is_ai_turn {
                     // ai response
-                    let free_board_indices = self.board
+                    let free_board_indices = self
+                        .board
                         .iter()
                         .enumerate()
                         .filter(|(_, &value)| value == Field::Free)
                         .map(|(index, _)| index)
                         .collect::<Vec<_>>();
-    
+
                     Some(*free_board_indices.choose(&mut rand::thread_rng()).unwrap())
                 } else {
                     // player response
                     let position_input = Game::read_line().unwrap();
                     Game::parse_position_index_from_literal(position_input)
                 };
-    
+
                 if let Some(index) = input_index {
                     match self.board[index] {
                         Field::Free => break index,
@@ -147,23 +146,23 @@ impl Game {
                     continue;
                 }
             };
-    
+
             self.board[input_index] = Field::Occupied(self.current_piece);
-    
+
             // check for winner
             if self.board.detect_win(self.current_piece) {
                 break GameResult::Win(self.current_piece);
             }
-    
+
             // check for tie
             if !self.board.contains(&Field::Free) {
                 break GameResult::Tie;
             }
-    
+
             // toggle current player between X and O
             self.current_piece = match self.current_piece {
                 Piece::X => Piece::O,
-                Piece::O => Piece::X
+                Piece::O => Piece::X,
             }
         }
     }
@@ -171,7 +170,7 @@ impl Game {
     fn parse_position_index_from_literal(literal: String) -> Option<usize> {
         let mut column: Option<usize> = None;
         let mut row: Option<usize> = None;
-    
+
         let upper_literal = literal.to_uppercase();
         column = if column.is_none() && upper_literal.contains('A') {
             Some(0)
@@ -188,7 +187,7 @@ impl Game {
         } else {
             column
         };
-    
+
         row = if row.is_none() && upper_literal.contains('1') {
             Some(0)
         } else {
@@ -204,14 +203,14 @@ impl Game {
         } else {
             row
         };
-    
+
         if let Some(c) = column {
             row.map(|r| r * 3 + c)
         } else {
             None
         }
     }
-    
+
     fn read_line() -> io::Result<String> {
         let mut input = String::new();
         match io::stdin().read_line(&mut input) {
@@ -222,7 +221,7 @@ impl Game {
             Err(e) => Err(e),
         }
     }
-    
+
     fn trim_newline(s: &mut String) {
         if s.ends_with('\n') {
             s.pop();
@@ -256,7 +255,7 @@ impl fmt::Display for Piece {
             "{}",
             match self {
                 Piece::X => "X".red().to_string(),
-                Piece::O => "O".blue().to_string()
+                Piece::O => "O".blue().to_string(),
             }
         )
     }
@@ -269,7 +268,7 @@ impl fmt::Display for Field {
             "{}",
             match self {
                 Field::Free => " ".white().to_string(),
-                Field::Occupied(piece) => piece.to_string()
+                Field::Occupied(piece) => piece.to_string(),
             }
         )
     }
