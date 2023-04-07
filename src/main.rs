@@ -12,8 +12,13 @@ struct Args {
 }
 
 #[derive(Clone, Copy, PartialEq)]
-enum Position {
-    Empty,
+enum Field {
+    Free,
+    Occupied(Piece),
+}
+
+#[derive(Clone, Copy, PartialEq)]
+enum Piece {
     X,
     O,
 }
@@ -23,15 +28,27 @@ enum GameResult {
     Tie,
 }
 
-impl fmt::Display for Position {
+impl fmt::Display for Piece {
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
         write!(
             f,
             "{}",
             match self {
-                Position::Empty => " ".white().to_string(),
-                Position::X => "X".red().to_string(),
-                Position::O => "O".blue().to_string(),
+                Piece::X => "X".red().to_string(),
+                Piece::O => "O".blue().to_string()
+            }
+        )
+    }
+}
+
+impl fmt::Display for Field {
+    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
+        write!(
+            f,
+            "{}",
+            match self {
+                Field::Free => " ".white().to_string(),
+                Field::Occupied(piece) => piece.to_string()
             }
         )
     }
@@ -39,25 +56,25 @@ impl fmt::Display for Position {
 
 fn main() {
     let mut board = vec![
-        Position::Empty,
-        Position::Empty,
-        Position::Empty,
-        Position::Empty,
-        Position::Empty,
-        Position::Empty,
-        Position::Empty,
-        Position::Empty,
-        Position::Empty,
+        Field::Free,
+        Field::Free,
+        Field::Free,
+        Field::Free,
+        Field::Free,
+        Field::Free,
+        Field::Free,
+        Field::Free,
+        Field::Free,
     ];
 
     let args = Args::parse();
 
-    let mut current_player = Position::X;
+    let mut current_player = Piece::X;
     let result = loop {
         let input_index: usize = loop {
             print_board(&board);
 
-            let is_ai_turn = args.ai != 0 && current_player == Position::O;
+            let is_ai_turn = args.ai != 0 && current_player == Piece::O;
 
             println!(
                 "{} {}: What's your next position?",
@@ -70,7 +87,7 @@ fn main() {
                 let free_board_indices = board
                     .iter()
                     .enumerate()
-                    .filter(|(_, &value)| value == Position::Empty)
+                    .filter(|(_, &value)| value == Field::Free)
                     .map(|(index, _)| index)
                     .collect::<Vec<_>>();
 
@@ -83,7 +100,7 @@ fn main() {
 
             if let Some(index) = input_index {
                 match board[index] {
-                    Position::Empty => break index,
+                    Field::Free => break index,
                     _ => {
                         eprintln!("This position is already occupied!");
                         continue;
@@ -95,7 +112,7 @@ fn main() {
             }
         };
 
-        board[input_index] = current_player;
+        board[input_index] = Field::Occupied(current_player);
 
         // check for winner
         if detect_win(&board, current_player) {
@@ -103,15 +120,14 @@ fn main() {
         }
 
         // check for tie
-        if !board.contains(&Position::Empty) {
+        if !board.contains(&Field::Free) {
             break GameResult::Tie;
         }
 
         // toggle current player between X and O
         current_player = match current_player {
-            Position::Empty => Position::Empty,
-            Position::X => Position::O,
-            Position::O => Position::X,
+            Piece::X => Piece::O,
+            Piece::O => Piece::X,
         }
     };
 
@@ -128,7 +144,10 @@ fn main() {
     print_board(&board);
 }
 
-fn detect_win(board: &[Position], current_player: Position) -> bool {
+fn detect_win(board: &[Field], current_player: Piece) -> bool {
+
+    let current_player = Field::Occupied(current_player);
+
     // rows
     if board[0] == current_player && board[1] == current_player && board[2] == current_player {
         return true;
@@ -206,7 +225,7 @@ fn parse_position_index_from_literal(literal: String) -> Option<usize> {
     }
 }
 
-fn print_board(board: &[Position]) {
+fn print_board(board: &[Field]) {
     println!("  A   B   C ");
     println!("1 {} | {} | {}", board[0], board[1], board[2]);
     println!(" ---+---+---");
