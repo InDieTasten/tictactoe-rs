@@ -1,6 +1,6 @@
-use clap::Parser;
 use crate::game::Game;
 use crate::game::GameResult;
+use clap::Parser;
 
 mod game;
 
@@ -12,7 +12,6 @@ struct Args {
 }
 
 fn main() {
-
     let args = Args::parse();
 
     let mut game = Game::new(args.ai > 0);
