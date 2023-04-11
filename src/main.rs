@@ -1,8 +1,9 @@
-use crate::game::Game;
-use crate::game::GameResult;
-use crate::player::AiPlayer;
-use crate::player::LocalPlayer;
 use clap::Parser;
+
+use crate::{
+    game::{game::Game, game_result::GameResult},
+    player::{ai_player::AiPlayer, local_player::LocalPlayer},
+};
 
 mod game;
 mod player;

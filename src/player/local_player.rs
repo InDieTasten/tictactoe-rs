@@ -1,20 +1,10 @@
-use core::fmt;
-use std::io::{stdin, Result};
+use std::{fmt, io::stdin};
 
-use rand::seq::SliceRandom;
+use crate::game::{board::Board, field::Field, piece::Piece};
 
-use crate::game::{Board, Field, Piece};
-
-pub trait Player {
-    fn set_piece(&mut self, piece: Piece);
-    fn pick_field(&self, board: &Board) -> usize;
-}
+use super::player::Player;
 
 pub struct LocalPlayer {
-    piece: Option<Piece>,
-}
-
-pub struct AiPlayer {
     piece: Option<Piece>,
 }
 
@@ -25,7 +15,7 @@ impl LocalPlayer {
         }
     }
 
-    fn read_line() -> Result<String> {
+    fn read_line() -> std::io::Result<String> {
         let mut input = String::new();
         match stdin().read_line(&mut input) {
             Ok(_) => {
@@ -131,35 +121,5 @@ impl fmt::Display for LocalPlayer {
                 Some(piece) => piece.to_string(),
             }
         )
-    }
-}
-
-impl Player for AiPlayer {
-    fn set_piece(&mut self, piece: Piece) {
-        self.piece = Some(piece)
-    }
-
-    fn pick_field(&self, board: &Board) -> usize {
-        match self.piece {
-            None => panic!("AiPlayer wasn't initialized with a piece type."),
-            Some(_) => {
-                let free_board_indices = board
-                    .iter()
-                    .enumerate()
-                    .filter(|(_, &value)| value == Field::Free)
-                    .map(|(index, _)| index)
-                    .collect::<Vec<_>>();
-
-                *free_board_indices.choose(&mut rand::thread_rng()).unwrap()
-            }
-        }
-    }
-}
-
-impl AiPlayer {
-    pub fn new() -> AiPlayer {
-        AiPlayer {
-            piece: Option::None,
-        }
     }
 }
