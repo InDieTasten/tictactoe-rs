@@ -10,7 +10,6 @@ pub mod field;
 pub mod game_result;
 pub mod piece;
 
-
 pub struct Game {
     pub board: Board,
     current_piece: Piece,
