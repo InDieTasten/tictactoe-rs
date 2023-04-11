@@ -1,8 +1,8 @@
 use clap::Parser;
 
 use crate::{
-    game::{game_result::GameResult, Game},
-    player::{ai_player::AiPlayer, local_player::LocalPlayer},
+    game::{GameResult, Game},
+    player::{AiPlayer, LocalPlayer},
 };
 
 mod game;

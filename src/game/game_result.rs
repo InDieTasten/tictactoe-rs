@@ -1,4 +1,4 @@
-use super::piece::Piece;
+use super::Piece;
 
 pub enum GameResult {
     Win(Piece),

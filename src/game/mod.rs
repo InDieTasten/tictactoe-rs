@@ -1,11 +1,15 @@
 use crate::player::Player;
 
-use self::{board::Board, field::Field, game_result::GameResult, piece::Piece};
+pub use board::Board;
+pub use field::Field;
+pub use game_result::GameResult;
+pub use piece::Piece;
 
 pub mod board;
 pub mod field;
 pub mod game_result;
 pub mod piece;
+
 
 pub struct Game {
     pub board: Board,

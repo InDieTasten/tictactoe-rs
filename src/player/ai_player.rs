@@ -1,6 +1,6 @@
 use rand::seq::SliceRandom;
 
-use crate::game::{board::Board, field::Field, piece::Piece};
+use crate::game::{Board, Field, Piece};
 
 use super::Player;
 

@@ -1,6 +1,6 @@
 use std::{fmt, ops};
 
-use super::{field::Field, piece::Piece};
+use super::{Field, Piece};
 
 pub struct Board(pub Vec<Field>);
 

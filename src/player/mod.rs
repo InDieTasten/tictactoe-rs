@@ -1,5 +1,8 @@
 use crate::game::{board::Board, piece::Piece};
 
+pub use ai_player::AiPlayer;
+pub use local_player::LocalPlayer;
+
 pub mod ai_player;
 pub mod local_player;
 

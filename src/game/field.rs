@@ -2,7 +2,7 @@ use std::fmt;
 
 use colored::Colorize;
 
-use super::piece::Piece;
+use super::Piece;
 
 #[derive(Clone, Copy, PartialEq)]
 pub enum Field {
