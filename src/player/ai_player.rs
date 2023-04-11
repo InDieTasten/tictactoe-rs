@@ -2,7 +2,7 @@ use rand::seq::SliceRandom;
 
 use crate::game::{board::Board, field::Field, piece::Piece};
 
-use super::player::Player;
+use super::Player;
 
 pub struct AiPlayer {
     piece: Option<Piece>,

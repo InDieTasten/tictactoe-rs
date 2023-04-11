@@ -2,7 +2,7 @@ use std::{fmt, io::stdin};
 
 use crate::game::{board::Board, field::Field, piece::Piece};
 
-use super::player::Player;
+use super::Player;
 
 pub struct LocalPlayer {
     piece: Option<Piece>,
