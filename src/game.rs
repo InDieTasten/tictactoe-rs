@@ -1,7 +1,8 @@
-use std::{fmt, io, ops};
+use std::{fmt, ops};
 
 use colored::Colorize;
-use rand::seq::SliceRandom;
+
+use crate::player::Player;
 
 pub struct Board(pub Vec<Field>);
 
@@ -90,60 +91,39 @@ pub enum GameResult {
 
 pub struct Game {
     pub board: Board,
-    is_ai_game: bool,
     current_piece: Piece,
+    player_x: Box<dyn Player>,
+    player_o: Box<dyn Player>
 }
 
 impl Game {
-    pub fn new(ai_player: bool) -> Game {
+    pub fn new(mut player_x: Box<dyn Player>, mut player_o: Box<dyn Player>) -> Game {
+        player_x.set_piece(Piece::X);
+        player_o.set_piece(Piece::O);
+        
         Game {
             board: Board::new(),
-            is_ai_game: ai_player,
             current_piece: Piece::X,
+            player_x,
+            player_o
         }
     }
 
     pub fn play(&mut self) -> GameResult {
         loop {
             let input_index: usize = loop {
-                println!("{}", self.board);
-
-                let is_ai_turn = self.is_ai_game && self.current_piece == Piece::O;
-
-                println!(
-                    "{} {}: What's your next position?",
-                    if is_ai_turn { "AI" } else { "Player" },
-                    self.current_piece
-                );
-
-                let input_index = if is_ai_turn {
-                    // ai response
-                    let free_board_indices = self
-                        .board
-                        .iter()
-                        .enumerate()
-                        .filter(|(_, &value)| value == Field::Free)
-                        .map(|(index, _)| index)
-                        .collect::<Vec<_>>();
-
-                    Some(*free_board_indices.choose(&mut rand::thread_rng()).unwrap())
-                } else {
-                    // player response
-                    let position_input = Game::read_line().unwrap();
-                    Game::parse_position_index_from_literal(position_input)
+                let current_player = match self.current_piece {
+                    Piece::X => &self.player_x,
+                    Piece::O => &self.player_o
                 };
 
-                if let Some(index) = input_index {
-                    match self.board[index] {
-                        Field::Free => break index,
-                        _ => {
-                            eprintln!("This position is already occupied!");
-                            continue;
-                        }
-                    }
-                } else {
-                    eprintln!("Unable to read coordinates from input!");
+                let played_index = current_player.pick_field(&self.board);
+
+                if self.board[played_index] != Field::Free {
+                    eprintln!("This field is already occupied.");
                     continue;
+                } else {
+                    break played_index;
                 }
             };
 
@@ -163,70 +143,6 @@ impl Game {
             self.current_piece = match self.current_piece {
                 Piece::X => Piece::O,
                 Piece::O => Piece::X,
-            }
-        }
-    }
-
-    fn parse_position_index_from_literal(literal: String) -> Option<usize> {
-        let mut column: Option<usize> = None;
-        let mut row: Option<usize> = None;
-
-        let upper_literal = literal.to_uppercase();
-        column = if column.is_none() && upper_literal.contains('A') {
-            Some(0)
-        } else {
-            column
-        };
-        column = if column.is_none() && upper_literal.contains('B') {
-            Some(1)
-        } else {
-            column
-        };
-        column = if column.is_none() && upper_literal.contains('C') {
-            Some(2)
-        } else {
-            column
-        };
-
-        row = if row.is_none() && upper_literal.contains('1') {
-            Some(0)
-        } else {
-            row
-        };
-        row = if row.is_none() && upper_literal.contains('2') {
-            Some(1)
-        } else {
-            row
-        };
-        row = if row.is_none() && upper_literal.contains('3') {
-            Some(2)
-        } else {
-            row
-        };
-
-        if let Some(c) = column {
-            row.map(|r| r * 3 + c)
-        } else {
-            None
-        }
-    }
-
-    fn read_line() -> io::Result<String> {
-        let mut input = String::new();
-        match io::stdin().read_line(&mut input) {
-            Ok(_) => {
-                Game::trim_newline(&mut input);
-                Ok(input)
-            }
-            Err(e) => Err(e),
-        }
-    }
-
-    fn trim_newline(s: &mut String) {
-        if s.ends_with('\n') {
-            s.pop();
-            if s.ends_with('\r') {
-                s.pop();
             }
         }
     }
