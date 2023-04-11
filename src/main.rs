@@ -1,8 +1,11 @@
 use crate::game::Game;
 use crate::game::GameResult;
+use crate::player::AiPlayer;
+use crate::player::LocalPlayer;
 use clap::Parser;
 
 mod game;
+mod player;
 
 #[derive(Parser, Debug)]
 #[command(author, version, about)]
@@ -14,7 +17,14 @@ struct Args {
 fn main() {
     let args = Args::parse();
 
-    let mut game = Game::new(args.ai > 0);
+    let mut game = Game::new(
+        Box::new(LocalPlayer::new()),
+        if args.ai > 0 {
+            Box::new(AiPlayer::new())
+        } else {
+            Box::new(LocalPlayer::new())
+        },
+    );
     let result = game.play();
 
     match result {
