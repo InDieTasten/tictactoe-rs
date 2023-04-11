@@ -1,4 +1,4 @@
-use crate::game::{piece::Piece, board::Board};
+use crate::game::{board::Board, piece::Piece};
 
 pub mod ai_player;
 pub mod local_player;

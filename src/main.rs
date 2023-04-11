@@ -1,7 +1,7 @@
 use clap::Parser;
 
 use crate::{
-    game::{Game, game_result::GameResult},
+    game::{game_result::GameResult, Game},
     player::{ai_player::AiPlayer, local_player::LocalPlayer},
 };
 
