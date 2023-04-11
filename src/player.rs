@@ -158,6 +158,8 @@ impl Player for AiPlayer {
 
 impl AiPlayer {
     pub fn new() -> AiPlayer {
-        AiPlayer { piece: Option::None }
+        AiPlayer {
+            piece: Option::None,
+        }
     }
 }

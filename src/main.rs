@@ -23,7 +23,7 @@ fn main() {
             Box::new(AiPlayer::new())
         } else {
             Box::new(LocalPlayer::new())
-        }
+        },
     );
     let result = game.play();
 
