@@ -33,7 +33,8 @@ enum PlayerKind {
     Ai,
 }
 
-fn main() {
+#[tokio::main()]
+async fn main() {
     let args = Cli::parse();
     match args.command {
         Commands::Play { x, o } => {
@@ -47,7 +48,7 @@ fn main() {
                     PlayerKind::Ai => Box::new(AiPlayer::new()),
                 },
             );
-            let result = game.play();
+            let result = game.play().await;
 
             match result {
                 GameResult::Tie => {

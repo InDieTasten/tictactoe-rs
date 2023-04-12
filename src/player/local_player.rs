@@ -1,5 +1,7 @@
 use std::{fmt, io::stdin};
 
+use async_trait::async_trait;
+
 use crate::game::{Board, Field, Piece};
 
 use super::Player;
@@ -17,6 +19,7 @@ impl LocalPlayer {
 
     fn read_line() -> std::io::Result<String> {
         let mut input = String::new();
+
         match stdin().read_line(&mut input) {
             Ok(_) => {
                 Self::trim_newline(&mut input);
@@ -80,12 +83,13 @@ impl LocalPlayer {
     }
 }
 
+#[async_trait]
 impl Player for LocalPlayer {
     fn set_piece(&mut self, piece: Piece) {
         self.piece = Some(piece);
     }
 
-    fn pick_field(&self, board: &Board) -> usize {
+    async fn pick_field(&self, board: &Board) -> usize {
         match self.piece {
             None => panic!("Local player wasn't initialized with a piece type."),
             Some(piece) => loop {

@@ -30,7 +30,7 @@ impl Game {
         }
     }
 
-    pub fn play(&mut self) -> GameResult {
+    pub async fn play(&mut self) -> GameResult {
         loop {
             let input_index: usize = loop {
                 let current_player = match self.current_piece {
@@ -38,7 +38,7 @@ impl Game {
                     Piece::O => &self.player_o,
                 };
 
-                let played_index = current_player.pick_field(&self.board);
+                let played_index = current_player.pick_field(&self.board).await;
 
                 if self.board[played_index] != Field::Free {
                     eprintln!("This field is already occupied.");
