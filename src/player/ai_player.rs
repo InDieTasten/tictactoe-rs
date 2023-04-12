@@ -1,3 +1,4 @@
+use async_trait::async_trait;
 use rand::seq::SliceRandom;
 
 use crate::game::{Board, Field, Piece};
@@ -8,12 +9,13 @@ pub struct AiPlayer {
     piece: Option<Piece>,
 }
 
+#[async_trait]
 impl Player for AiPlayer {
     fn set_piece(&mut self, piece: Piece) {
         self.piece = Some(piece)
     }
 
-    fn pick_field(&self, board: &Board) -> usize {
+    async fn pick_field(&self, board: &Board) -> usize {
         match self.piece {
             None => panic!("AiPlayer wasn't initialized with a piece type."),
             Some(_) => {
