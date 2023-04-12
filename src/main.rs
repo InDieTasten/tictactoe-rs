@@ -1,4 +1,4 @@
-use clap::Parser;
+use clap::{command, Parser, Subcommand, ValueEnum};
 
 use crate::{
     game::{Game, GameResult},
@@ -8,34 +8,58 @@ use crate::{
 mod game;
 mod player;
 
-#[derive(Parser, Debug)]
-#[command(author, version, about)]
-struct Args {
-    #[arg(long, default_value_t = 0)]
-    ai: u8,
+#[derive(Parser)]
+#[command(author, version, about, long_about = None)]
+#[command(propagate_version = true)]
+struct Cli {
+    #[command(subcommand)]
+    command: Commands,
+}
+
+#[derive(Subcommand)]
+enum Commands {
+    Play {
+        #[arg(value_enum)]
+        x: PlayerKind,
+        #[arg(value_enum)]
+        o: PlayerKind,
+    },
+    Connect,
+}
+
+#[derive(Copy, Clone, PartialEq, Eq, PartialOrd, Ord, ValueEnum)]
+enum PlayerKind {
+    Local,
+    Ai,
 }
 
 fn main() {
-    let args = Args::parse();
+    let args = Cli::parse();
+    match args.command {
+        Commands::Play { x, o } => {
+            let mut game = Game::new(
+                match x {
+                    PlayerKind::Local => Box::new(LocalPlayer::new()),
+                    PlayerKind::Ai => Box::new(AiPlayer::new()),
+                },
+                match o {
+                    PlayerKind::Local => Box::new(LocalPlayer::new()),
+                    PlayerKind::Ai => Box::new(AiPlayer::new()),
+                },
+            );
+            let result = game.play();
 
-    let mut game = Game::new(
-        Box::new(LocalPlayer::new()),
-        if args.ai > 0 {
-            Box::new(AiPlayer::new())
-        } else {
-            Box::new(LocalPlayer::new())
-        },
-    );
-    let result = game.play();
+            match result {
+                GameResult::Tie => {
+                    println!("The game ended in a tie. Well played from both sides!");
+                }
+                GameResult::Win(piece) => {
+                    println!("Player {} won the game! Congratulations!", piece);
+                }
+            };
 
-    match result {
-        GameResult::Tie => {
-            println!("The game ended in a tie. Well played from both sides!");
+            println!("Final board position:\n{}", game.board);
         }
-        GameResult::Win(piece) => {
-            println!("Player {} won the game! Congratulations!", piece);
-        }
+        Commands::Connect => todo!(),
     };
-
-    println!("Final board position:\n{}", game.board);
 }

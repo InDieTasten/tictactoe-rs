@@ -12,15 +12,37 @@ cd tictactoe-rs
 cargo build
 ```
 
-Usage
------
+Playing
+-------
 
-### Play local player vs player
-```bash
-cargo run
+## Hosting a match using `play`
+
+### Usage from `cargo run -- play --help`
+```
+Usage: tictactoe-rs play <X> <O>
+
+Arguments:
+  <X>  [possible values: local, ai]
+  <O>  [possible values: local, ai]
+
+Options:
+  -h, --help     Print help
+  -V, --version  Print version
 ```
 
-### Play local player vs AI
+### Examples
+
+Local player vs local player
 ```bash
-cargo run -- --ai=1
+cargo run -- play local local
+```
+
+Local player vs AI
+```bash
+cargo run -- play local ai
+```
+
+AI vs AI
+```bash
+cargo run -- play ai ai
 ```
