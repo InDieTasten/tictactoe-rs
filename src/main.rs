@@ -1,4 +1,4 @@
-use clap::{Parser, command, ValueEnum, Subcommand};
+use clap::{command, Parser, Subcommand, ValueEnum};
 
 use crate::{
     game::{Game, GameResult},
@@ -30,11 +30,10 @@ enum Commands {
 #[derive(Copy, Clone, PartialEq, Eq, PartialOrd, Ord, ValueEnum)]
 enum PlayerKind {
     Local,
-    Ai
+    Ai,
 }
 
 fn main() {
-    
     let args = Cli::parse();
     match args.command {
         Commands::Play { x, o } => {
@@ -46,10 +45,10 @@ fn main() {
                 match o {
                     PlayerKind::Local => Box::new(LocalPlayer::new()),
                     PlayerKind::Ai => Box::new(AiPlayer::new()),
-                }
+                },
             );
             let result = game.play();
-        
+
             match result {
                 GameResult::Tie => {
                     println!("The game ended in a tie. Well played from both sides!");
@@ -58,9 +57,9 @@ fn main() {
                     println!("Player {} won the game! Congratulations!", piece);
                 }
             };
-        
+
             println!("Final board position:\n{}", game.board);
-        },
+        }
         Commands::Connect => todo!(),
     };
 }
