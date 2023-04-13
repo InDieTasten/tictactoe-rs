@@ -1,8 +1,9 @@
 use std::fmt;
 
 use colored::Colorize;
+use serde::{Serialize, Deserialize};
 
-#[derive(Clone, Copy, PartialEq)]
+#[derive(Clone, Copy, PartialEq, Serialize, Deserialize)]
 pub enum Piece {
     X,
     O,

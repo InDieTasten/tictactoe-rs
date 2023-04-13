@@ -1,10 +1,11 @@
 use std::fmt;
 
 use colored::Colorize;
+use serde::{Serialize, Deserialize};
 
 use super::Piece;
 
-#[derive(Clone, Copy, PartialEq)]
+#[derive(Clone, Copy, PartialEq, Serialize, Deserialize)]
 pub enum Field {
     Free,
     Occupied(Piece),

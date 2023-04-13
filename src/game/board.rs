@@ -1,7 +1,10 @@
 use std::{fmt, ops};
 
+use serde::{Serialize, Deserialize };
+
 use super::{Field, Piece};
 
+#[derive(Serialize, Deserialize)]
 pub struct Board(pub Vec<Field>);
 
 impl ops::Deref for Board {

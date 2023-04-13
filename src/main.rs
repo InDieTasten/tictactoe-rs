@@ -1,4 +1,5 @@
 use clap::{command, Parser, Subcommand, ValueEnum};
+use player::{Player, RemotePlayer};
 
 use crate::{
     game::{Game, GameResult},
@@ -31,6 +32,17 @@ enum Commands {
 enum PlayerKind {
     Local,
     Ai,
+    Remote,
+}
+
+impl PlayerKind {
+    async fn to_player(&self) -> Box<dyn Player> {
+        match *self {
+            PlayerKind::Local => Box::new(LocalPlayer::new()),
+            PlayerKind::Ai => Box::new(AiPlayer::new()),
+            PlayerKind::Remote => Box::new(RemotePlayer::new().await),
+        }
+    }
 }
 
 #[tokio::main()]
@@ -38,16 +50,8 @@ async fn main() {
     let args = Cli::parse();
     match args.command {
         Commands::Play { x, o } => {
-            let mut game = Game::new(
-                match x {
-                    PlayerKind::Local => Box::new(LocalPlayer::new()),
-                    PlayerKind::Ai => Box::new(AiPlayer::new()),
-                },
-                match o {
-                    PlayerKind::Local => Box::new(LocalPlayer::new()),
-                    PlayerKind::Ai => Box::new(AiPlayer::new()),
-                },
-            );
+            let mut game = Game::new(x.to_player().await, o.to_player().await);
+
             let result = game.play().await;
 
             match result {
