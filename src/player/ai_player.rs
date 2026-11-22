@@ -1,5 +1,5 @@
 use async_trait::async_trait;
-use rand::seq::SliceRandom;
+use rand::seq::IndexedRandom;
 
 use crate::game::{Board, Field, Piece};
 
@@ -26,7 +26,7 @@ impl Player for AiPlayer {
                     .map(|(index, _)| index)
                     .collect::<Vec<_>>();
 
-                *free_board_indices.choose(&mut rand::thread_rng()).unwrap()
+                *free_board_indices.choose(&mut rand::rng()).unwrap()
             }
         }
     }

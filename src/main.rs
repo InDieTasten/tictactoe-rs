@@ -1,4 +1,4 @@
-use clap::{command, Parser, Subcommand, ValueEnum};
+use clap::{Parser, Subcommand, ValueEnum};
 
 use crate::{
     game::{Game, GameResult},
